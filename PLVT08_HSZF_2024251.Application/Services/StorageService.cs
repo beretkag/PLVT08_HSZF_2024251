@@ -59,7 +59,7 @@ namespace PLVT08_HSZF_2024251.Application.Services
         }
         public bool ChangeQuantity(Storage storage, int quantity)
         {
-            if (quantity < 0 || storage.UsedCapacity > quantity)
+            if (quantity < 0 || storage.UsedCapacity >= quantity)
             {
                 return false;
             }

@@ -8,7 +8,6 @@ namespace PLVT08_HSZF_2024251.Application.Services
         public Person Add(Person person);
         public ICollection<Person> GetAll();
         public ICollection<Person> GetByFilter(Func<Person, bool> filter);
-        public void Update(Person person);
         public void Delete(Person person);
 
     }
@@ -35,11 +34,6 @@ namespace PLVT08_HSZF_2024251.Application.Services
         public ICollection<Person> GetByFilter(Func<Person, bool> filter)
         {
             return personProvider.GetAll().Where(filter).ToHashSet();
-        }
-        public void Update(Person person)
-        {
-            //TODO: Implement how
-            personProvider.Update(person.Id, person);
         }
         public void Delete(Person person)
         {

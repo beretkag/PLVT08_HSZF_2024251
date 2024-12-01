@@ -20,18 +20,16 @@ namespace PLVT08_HSZF_2024251.Application.Services
     {
         private readonly IProductProvider productProvider;
         private readonly IStorageProvider storageProvider;
-        private readonly IMailProvider mailProvider;
-        private readonly IPersonProvider personProvider;
+
 
         public event Action<Product> ProcureEvent;
         public event Action<Product> CriticalLeveleEvent;
 
-        public ProductService(IProductProvider productProvider, IStorageProvider storageProvider, IMailProvider mailProvider, IPersonProvider personProvider)
+        public ProductService(IProductProvider productProvider, IStorageProvider storageProvider)
         {
             this.productProvider = productProvider;
             this.storageProvider = storageProvider;
-            this.mailProvider = mailProvider;
-            this.personProvider = personProvider;
+
         }
 
         public Product Add(Product product)
@@ -51,7 +49,7 @@ namespace PLVT08_HSZF_2024251.Application.Services
         {
             bool storeInFridge = product.StoreInFridge;
             Storage storage = storageProvider.GetAll().Where(x => x.Id == storeInFridge).First();
-            if (Convert.ToDouble(storage.Capacity) < storage.UsedCapacity + quantity || 0 > storage.UsedCapacity + quantity)
+            if (Convert.ToDouble(storage.Capacity) <= storage.UsedCapacity + quantity || 0 > storage.UsedCapacity + quantity || quantity + product.Quantity < 0)
             {
                 return false;
             }

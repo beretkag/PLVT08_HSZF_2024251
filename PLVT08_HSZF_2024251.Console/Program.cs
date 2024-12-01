@@ -5,7 +5,6 @@ using PLVT08_HSZF_2024251.Console.Menus;
 using PLVT08_HSZF_2024251.Model;
 using PLVT08_HSZF_2024251.Persistence.MsSql;
 using PLVT08_HSZF_2024251.Persistence.MsSql.DataProviders;
-using System;
 
 namespace PLVT08_HSZF_2024251.Console
 {
@@ -44,10 +43,18 @@ namespace PLVT08_HSZF_2024251.Console
             IMailService mailService = app.Services.CreateScope().ServiceProvider.GetService<IMailService>();
             IFileService fileService = app.Services.CreateScope().ServiceProvider.GetService<IFileService>();
 
+            PersonMenu.personService = personService;
+            ProductMenu.productService = productService;
+            ProductMenu.favoriteProductService = favoriteProductService;
+            StorageMenu.productService = productService;
+            StorageMenu.storageService = storageService;
+            MailMenu.mailService = mailService;
+            FileMenu.fileService = fileService;
+
             Preparation(storageService, productService, mailService, personService);
             FileMenu.FileReading();
 
-            
+
 
             //Dummy Data
             Product prod1 = productService.Add(new Product()
@@ -74,19 +81,6 @@ namespace PLVT08_HSZF_2024251.Console
 
             favoriteProductService.Add(pers1, prod1);
             //Dummy data end
-
-            PersonMenu.personService = personService;
-            ProductMenu.productService = productService;
-            ProductMenu.favoriteProductService = favoriteProductService;
-            StorageMenu.productService = productService;
-            StorageMenu.storageService = storageService;
-            MailMenu.mailService = mailService;
-            FileMenu.fileService = fileService;
-
-
-
-
-
 
 
             Menu personMenu = PersonMenu.PersonChoose();
@@ -115,7 +109,7 @@ namespace PLVT08_HSZF_2024251.Console
                         {
                             PersonId = person.Id,
                             Date = DateTime.Now,
-                            Content = $"A {storage.Name} kapacitása kritikus szint alá csökkent, már csak {percent : 0.00}% hely maradt"
+                            Content = $"A {storage.Name} kapacitása kritikus szint alá csökkent, már csak {percent: 0.00}% hely maradt"
                         });
                     }
                 }
@@ -148,9 +142,9 @@ namespace PLVT08_HSZF_2024251.Console
                         Content = $"A(z) {product.Name} termékből újabb beszerzés történt"
                     });
                 }
-
-                
             };
+
         }
+
     }
 }

@@ -6,9 +6,7 @@ namespace PLVT08_HSZF_2024251.Application.Services
     public interface IMailService
     {
         public Mail Add(Mail mail);
-        public ICollection<Mail> GetAll();
         public ICollection<Mail> GetByFilter(Func<Mail, bool> filter);
-        public void Update(Mail mail);
         public void Delete(Mail mail);
 
     }
@@ -27,18 +25,10 @@ namespace PLVT08_HSZF_2024251.Application.Services
         {
             return mailProvider.Add(mail);
         }
-        public ICollection<Mail> GetAll()
-        {
-            return mailProvider.GetAll();
-        }
 
         public ICollection<Mail> GetByFilter(Func<Mail, bool> filter)
         {
             return mailProvider.GetAll().Where(filter).ToHashSet();
-        }
-        public void Update(Mail mail)
-        {
-            mailProvider.Update(mail.Id, mail);
         }
         public void Delete(Mail mail)
         {

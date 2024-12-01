@@ -1,7 +1,6 @@
 ﻿
 
 using PLVT08_HSZF_2024251.Application.Services;
-using System.Reflection.PortableExecutable;
 
 namespace PLVT08_HSZF_2024251.Console.Menus
 {
@@ -13,9 +12,18 @@ namespace PLVT08_HSZF_2024251.Console.Menus
             while (BoolQuestion("Szeretne fájlt beolvasni? "))
             {
                 System.Console.Write("Fájlnév: ");
-                fileService.Import(System.Console.ReadLine());
-                System.Console.WriteLine("Sikeres fájlbeolvasás");
+                System.Console.CursorVisible = true;
+                try
+                {
+                    fileService.Import(System.Console.ReadLine());
+                    System.Console.WriteLine("Sikeres fájlbeolvasás");
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine("Hibás adatok!");
+                }
                 WaitForEnd();
+                System.Console.CursorVisible = false;
             }
         }
 

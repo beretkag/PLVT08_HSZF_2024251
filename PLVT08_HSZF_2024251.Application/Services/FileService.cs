@@ -64,6 +64,7 @@ namespace PLVT08_HSZF_2024251.Application.Services
             //Products
             foreach (Product product in products.Select(x => new Product()
             {
+                Id = x.Id,
                 BestBefore = x.BestBefore,
                 CriticalLevel = x.CriticalLevel,
                 Name = x.Name,
@@ -71,42 +72,58 @@ namespace PLVT08_HSZF_2024251.Application.Services
                 StoreInFridge = x.StoreInFridge
             }))
             {
-                productProvider.Add(product);
+                Storage storage = storageProvider.GetAll().First(x => x.Id == product.StoreInFridge);
+                if (storage.Capacity < storage.UsedCapacity + product.Quantity || 0 > storage.UsedCapacity + product.Quantity)
+                {
+                    throw new ArgumentOutOfRangeException("Tároló túltöltése léphet fel!");
+                }
+                else
+                {
+                    if (productProvider.GetAll().Any(x => x.Id == product.Id))
+                    {
+                        Product updating = productProvider.GetAll().First(x => x.Id == product.Id);
+                        updating.Quantity += product.Quantity;
+                        productProvider.Update(updating.Id, updating);
+                    }
+                    else
+                    {
+                        productProvider.Add(product);
+                    }
+                }
             }
 
             //People
+            
             if (root["Persons"] != null)
             {
                 JArray personsJson = JArray.Parse(root["Persons"]!.ToString());
                 foreach (var personJson in personsJson)
                 {
-                    Person person = JsonConvert.DeserializeObject<Person>(personJson.ToString(), new JsonSerializerSettings()
-                    {
-                        MissingMemberHandling = MissingMemberHandling.Error
-                    });
+                    Person person = JsonConvert.DeserializeObject<Person>(personJson.ToString());
 
                     var Ids = JArray.Parse(personJson["FavoriteProductIds"].ToString());
 
-                    string id= personProvider.Add(person).Id;
+                    Person newPerson = new Person()
+                    {
+                        Name = person.Name,
+                        ResponsibleForPurchase = person.ResponsibleForPurchase
+                    };
+                    personProvider.Add(newPerson);
+
                     foreach (var productId in Ids.Select(x => (string)x))
                     {
-                        if (productProvider.GetAll().Any(x => x.Id == productId))
+                        if (!favoriteProductProvider.GetAll().Any(x => x.PersonId == newPerson.Id && x.ProductId == productId))
                         {
                             FavoriteProduct favoriteProduct = new FavoriteProduct()
                             {
-                                PersonId = id,
+                                PersonId = newPerson.Id,
                                 ProductId = productId
                             };
                             favoriteProductProvider.Add(favoriteProduct);
-                            
-
                         }
                     }
                 }
-
             }
-
-
         }
     }
 }
